@@ -5,13 +5,13 @@ import React from 'react'
 function DeleteBTN({ id }) {
 
     const handleDelete = async () => {
-        const confirmation = confirm("Are you sure you want to delete this post?");
+        const confirmation = confirm("Are you sure you want to delete this user?");
         //console.log("id:", id);
         
 
         if (confirmation) {
             try {
-                const response = await fetch(`http://localhost:3000/api/posts?id=${id}`, {
+                const response = await fetch(`http://localhost:3000/api/users?id=${id}`, {
                     method: "DELETE",
                 });
 
@@ -20,8 +20,8 @@ function DeleteBTN({ id }) {
                 }
 
             } catch (error) {
-                console.error("Error deleting post:", error);
-                alert("An error occurred while deleting the post. Please try again.");
+                console.error("Error deleting user:", error);
+                alert("An error occurred while deleting the user. Please try again.");
             }
         }
         

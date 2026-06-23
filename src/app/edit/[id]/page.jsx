@@ -4,95 +4,101 @@ import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-function EditPostPage({ params }) {
+function EditUserPage({ params }) {
     const { id } = use(params);
 
-    const [postData, setPostData] = useState(null);
+    const [userData, setUserData] = useState(null);
 
     //New data states
-    const [newTitle, setNewTitle] = useState("");
-    const [newContent, setNewContent] = useState("");
-    const [newImage, setNewImage] = useState("");
+    const [newName, setNewName] = useState("");
+    const [newAge, setNewAge] = useState("");
+    const [newEmail, setNewEmail] = useState("");
+    const [newAvatarUrl, setNewAvatarUrl] = useState("");
 
     const router = useRouter();
-    const getPostById = async () => {
+    const getUserById = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/posts/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/users/${id}`, {
                 method: "GET",
                 cache: "no-store",
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch post");
-            }
-            const data = await response.json();
-            console.log("edit post", data.post);
-            setPostData(data.post);
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch user");
+                    }
+                    const data = await response.json();
+                    console.log("edit user", data.user);
+                    setUserData(data.user);
         } catch (error) {
-            console.error("Error fetching post:", error);
+                    console.error("Error fetching user:", error);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:3000/api/posts/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/users/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ newTitle, newImage, newContent })
+                body: JSON.stringify({ newName, newAge, newEmail, newAvatarUrl })
             });
             console.log("response", response);
             if (!response.ok) {
-                throw new Error("Failed to update post");
+                throw new Error("Failed to update user");
             }
 
             router.refresh();
             router.push("/");
 
         } catch (error) {
-            console.error("Error updating post:", error);
+            console.error("Error updating user:", error);
         }
     };
 
     useEffect(() => {
-        getPostById();
+        getUserById();
     }, [id]);
 
     return (
         <div className="container mx-auto py-10 font-sans">
-            <h3 className="text-3xl font-bold">Edit Post</h3>
+            <h3 className="text-3xl font-bold">Edit User</h3>
             <hr className="my-3" />
             <Link href="/" className="bg-gray-500 inline-block text-white border py-2 px-3 rounded my-2">
-                Back to Posts
+                Back to Users
             </Link>
             <form onSubmit={handleSubmit} >
                 <input
                     type="text"
-                    className="w-[300px] block  py-2 px-2 rounded my-2 bg-gray-200 text-lg my-2"
-                    placeholder={postData ? postData.title : "Post Title"}
-                    onChange={(e) => setNewTitle(e.target.value)}
+                    className="w-[300px] block py-2 px-2 rounded my-2 bg-gray-200 text-lg"
+                    placeholder={userData ? userData.name : "Name"}
+                    onChange={(e) => setNewName(e.target.value)}
                 />
                 <input
                     type="text"
-                    className="w-[300px] block  py-2 px-2 rounded my-2 bg-gray-200 text-lg my-2"
-                    placeholder={postData ? postData.image : "Image URL"}
-                    onChange={(e) => setNewImage(e.target.value)}
+                    className="w-[300px] block py-2 px-2 rounded my-2 bg-gray-200 text-lg"
+                    placeholder={userData ? String(userData.age) : "Age"}
+                    onChange={(e) => setNewAge(e.target.value)}
                 />
-                <textarea
-                    className="w-[300px] block  py-2 px-2 rounded my-2 bg-gray-200 text-lg my-2"
-                    placeholder={postData ? postData.content : "Enter Your Content"}
-                    cols="30"
-                    rows="10"
-                    onChange={(e) => setNewContent(e.target.value)}
-                ></textarea>
+                <input
+                    type="email"
+                    className="w-[300px] block py-2 px-2 rounded my-2 bg-gray-200 text-lg"
+                    placeholder={userData ? userData.email : "Email"}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                />
+                <input
+                    type="text"
+                    className="w-[300px] block py-2 px-2 rounded my-2 bg-gray-200 text-lg"
+                    placeholder={userData ? userData.avatarUrl : "Avatar URL"}
+                    onChange={(e) => setNewAvatarUrl(e.target.value)}
+                />
                 <button type="submit" className="bg-green-500 p-3 text-white rounded text-lg my-2">
-                    Update Post
+                    Update User
                 </button>
             </form>
         </div>
     )
 }
 
-export default EditPostPage
+export default EditUserPage
